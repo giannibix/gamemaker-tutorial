@@ -1,10 +1,5 @@
 ///move_state()
 
-var right = keyboard_check(vk_right);
-var left = keyboard_check(vk_left);
-var up = keyboard_check(vk_up);
-var up_release = keyboard_check_released(vk_up);
-var down = keyboard_check(vk_down);
 
 if (!place_meeting(x,y+1,Solid)){
     vspd += grav;
@@ -23,6 +18,7 @@ if (!place_meeting(x,y+1,Solid)){
     
     if (up){
         vspd = -jspd;
+        audio_play_sound(snd_jump,5,false);
     }
     
     // Player on ground
@@ -49,6 +45,12 @@ if (hspd != 0){
     image_xscale = sign(hspd);
 }
 
+// Play landing sound
+if (place_meeting(x,y+vspd+1, Solid) && vspd > 0){
+    audio_emitter_pitch(audio_em,random_range(0.8,1.2));
+    audio_emitter_gain(audio_em,0.2);
+    audio_play_sound_on(audio_em,snd_step,false,6);
+}
 
 move(Solid);
 
@@ -71,5 +73,10 @@ if (falling && no_wall_previous && is_wall_current){
     
     sprite_index = spr_player_ledge_grab;
     state = ledge_grab_state;
+    
+    //Play ledge grab sound
+    audio_emitter_pitch(audio_em,1.5);
+    audio_emitter_gain(audio_em,0.1);
+    audio_play_sound_on(audio_em,snd_step,false,6);
 }
 
